@@ -1,14 +1,13 @@
 #!/usr/bin/env node
 
-const Git = require('nodegit');
 const program = require('commander');
 const shell = require('shelljs');
 const fs = require('fs');
 const templates = require('../templates');
 const generate = require('../src/generate');
+const update = require('../src/update');
 const { chalkError, chalkInfo } = require('../util/chalkConfig');
 const ora = require('ora');
-
 const spinner = ora('文件下载中...请不要关闭命令行窗口');
 
 program
@@ -19,15 +18,14 @@ program
   .command('new <project>')
   .action(function(project) {
     if (project) {
-      let pwd = shell.pwd();
+      let pwd = process.pwd();
       console.log(chalkInfo(`正在拉取模板代码，下载位置：${pwd}/${project}/ ...`));
       spinner.start();
-      Git.Clone('https://github.com/NSFI/react-ant-design-boilerplate', './' + project)
-        .then(function(repo) {
-            spinner.stop();
-            shell.rm('-rf', `${project}.git`);
-            console.log(chalkInfo('模板工程建立完成'));
-        });
+      shell.exec(`git clone https://github.com/NSFI/react-ant-design-boilerplate ./${project}`)
+      shell.rm('-rf', [`${project}/.git`,`${project}/u`]);
+
+      spinner.succeed('模板工程建立完成');
+
     } else {
       console.log(chalkError('正确命令例子：ysf new myproject'));
     }
@@ -47,6 +45,16 @@ program
       })
     } else {
       console.log(chalkError('正确命令例子：ysf generate mypage'));
+    }
+  });
+program
+  .command('update [version]')
+  .alias('u')
+  .action(function(version) {
+    if (version) {
+      update(version);
+    } else {
+      console.log(chalkError('正确命令例子：ysf update [version]'));
     }
   })
 program.parse(process.argv);
