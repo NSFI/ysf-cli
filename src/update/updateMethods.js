@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const utils = require("./utils");
 const fsExtra = require("fs-extra");
+const execPromise = require("../../util/execPromise");
 const {
   PROJ_DIR,
   CACHE_DIR,
@@ -39,6 +40,41 @@ async function resolveDepenendencies(origin, update) {
   }
 }
 
+async function execBeforeUpdate(config) {
+  if (!config || !config.hooks || !config.hooks.beforeUpdate) {
+    return;
+  }
+
+  let script = config.hooks.beforeUpdate;
+  if (script) {
+    script = path.resolve(CACHE_DIR, script);
+    return await executeScript(script);
+  }
+}
+async function execAfterUpdate(config) {
+  if (!config || !config.hooks || !config.hooks.afterUpdate) {
+    return;
+  }
+
+  let script = config.hooks.afterUpdate;
+  if (script) {
+    script = path.resolve(CACHE_DIR, script);
+    return await executeScript(script);
+  }
+}
+
+async function executeScript(script, argv) {
+  return await execPromise(
+    `node ${script} ${argv ? JSON.stringify(argv) : ""}`,
+    {
+      cwd: CACHE_DIR,
+      env: { PROJECT_DIR: PROJ_DIR, CACHE_DIR: CACHE_DIR }
+    }
+  );
+}
+
 module.exports = {
-  resolveDepenendencies
+  resolveDepenendencies,
+  execBeforeUpdate,
+  execAfterUpdate
 };

@@ -24,6 +24,9 @@ exports.exec = async function(version, { debug } = {}) {
   }
 
   //before hook
+  if (config.hooks) {
+    await methods.execBeforeUpdate(config)
+  }
 
   // 1. 先处理package.json里的依赖
   let packageJSON = await fsExtra.readJSON(PROJ_PACKAGE_JSON);
@@ -32,6 +35,9 @@ exports.exec = async function(version, { debug } = {}) {
   await fsExtra.writeJSON(PROJ_PACKAGE_JSON, packageJSON, { spaces: 2 });
 
   //after hook
+  if (config.hooks) {
+    await methods.execAfterUpdate(config)
+  }
 };
 
 /**

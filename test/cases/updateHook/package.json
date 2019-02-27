@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "remove": "0.6.0",
+    "overwirte": "^0.0.1",
+    "origin": "^0.0.1"
+  },
+  "devDependencies": {
+    "dev-remove": "3.3",
+    "dev-overwirte": "3.3",
+    "dev-origin": "origin"
+  }
+}

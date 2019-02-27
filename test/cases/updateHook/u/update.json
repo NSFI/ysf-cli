@@ -1,0 +1,6 @@
+{
+  "hooks": {
+    "beforeUpdate": "./u/beforeUpdate.js",
+    "afterUpdate": "./u/afterUpdate.js"
+  }
+}
