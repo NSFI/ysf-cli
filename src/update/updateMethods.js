@@ -3,6 +3,9 @@ const path = require("path");
 const utils = require("./utils");
 const fsExtra = require("fs-extra");
 const execPromise = require("../../util/execPromise");
+
+const glob = require("glob");
+const shell = require("shelljs");
 const {
   PROJ_DIR,
   CACHE_DIR,
@@ -73,8 +76,50 @@ async function executeScript(script, argv) {
   );
 }
 
+async function override(config) {
+  if (config.override) {
+    let fileList = config.override;
+
+    shell.cd(CACHE_DIR);
+    for (let file of fileList) {
+      let matches = glob.sync(file, { cwd: CACHE_DIR });
+      for (let filename of matches) {
+        shell.cp(
+          path.resolve(CACHE_DIR, filename),
+          path.resolve(PROJ_DIR, filename)
+        );
+      }
+    }
+  }
+}
+
+async function rename(config) {
+  if (config.rename) {
+    let map = config.rename;
+    await Promise.all(
+      Object.keys(map).map(source => {
+        let dest = map[source];
+        return fsExtra.move(
+          path.resolve(PROJ_DIR, source),
+          path.resolve(PROJ_DIR, dest)
+        );
+      })
+    );
+  }
+}
+async function deleteFiles(config) {
+  if (config.delete) {
+    let fileList = config.delete;
+    shell.pushd(PROJ_DIR);
+    shell.rm("-rf", fileList);
+    shell.popd();
+  }
+}
 module.exports = {
   resolveDepenendencies,
   execBeforeUpdate,
-  execAfterUpdate
+  execAfterUpdate,
+  override,
+  rename,
+  delete: deleteFiles
 };

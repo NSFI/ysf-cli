@@ -3,14 +3,16 @@ const fsExtra = require("fs-extra");
 
 describe("Update-updateHook", () => {
   beforeAll(() => {
-    jest.mock("../../../src/update/variables", function() {
+    process.chdir(__dirname);
+    jest.mock("../../../src/update/variables", () => {
       const path = require("path");
       return {
-        PROJ_DIR: path.resolve("./"), //根目录
-        CACHE_DIR: path.resolve("test", "cases", "updateHook")
+        PROJ_DIR: path.resolve("../../../"), //根目录
+        CACHE_DIR: path.resolve("./")
       };
     });
   });
+
   it("should resolve execute hook script correctly", async () => {
     //  prepare
     const updateMethod = require("../../../src/update/updateMethods");
@@ -25,12 +27,11 @@ ${path.resolve(__dirname, "../../../")}
 ${path.resolve(__dirname)}`;
 
     const afterUpdateResult = "AfterUpdate\n[]";
-
     //  execute
     let beforeResult = await updateMethod.execBeforeUpdate(updateConfig);
     let afterResult = await updateMethod.execAfterUpdate(updateConfig);
 
-    //  verifie
+    //  verify
     expect(beforeResult).toBe(beforeUpdateResult);
     expect(afterResult).toBe(afterUpdateResult);
   });
