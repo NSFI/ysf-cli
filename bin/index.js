@@ -16,6 +16,7 @@ program
 program
   .on('--help', printHelp)
   .command('new <project>')
+  .description('Creates a new application')
   .action(function(project) {
     if (project) {
       let pwd = process.pwd();
@@ -33,6 +34,7 @@ program
 program
   .command('generate <app>')
   .alias('g')
+  .description('Generates new code (short-cut alias: "g")')
   .action(function(app) {
     if (app) {
       // 检查pwd当前是否有source
@@ -50,20 +52,21 @@ program
 program
   .command('update [version]')
   .alias('u')
-  .action(function(version) {
-    if (version) {
-      update(version);
+  .description('Update application boilerplate version')
+  .option("-l, --list", "list tags")
+  .option("-n, --noCache", "without cache")
+  .action(function (version, { list,  noCache }) {
+    if (version || list) {
+      update(version, { list, noCache });
     } else {
-      console.log(chalkError('正确命令例子：ysf update [version]'));
+      console.log(chalkError('正确命令例子：ysf update [version] 或 ysf update list'));
     }
   })
-program.parse(process.argv);
+program.option("--debug", "debug mode")
+  .option("-v, --verbose", "print all cli output")
+  .parse(process.argv);
 
 function printHelp() {
-  console.log(chalkInfo('  Commands:'));
-  console.log();
-  console.log(chalkInfo('    new            Creates a new application'));
-  console.log(chalkInfo('    generate       Generates new code (short-cut alias: "g")'));
   console.log();
   console.log(chalkInfo('  All commands can be run with -h (or --help) for more information.'));
 }

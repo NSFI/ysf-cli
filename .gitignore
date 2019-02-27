@@ -23,3 +23,5 @@ dist
 
 .jshintrc
 package-lock.json
+testOutput
+.cache

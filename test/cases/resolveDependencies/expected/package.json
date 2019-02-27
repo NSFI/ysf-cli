@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "origin": "^0.0.1",
+    "overwirte": "^0.0.3",
+    "newOne": "~0.3.2"
+  },
+  "devDependencies": {
+    "webpack": "^4.17.0",
+    "dev-overwirte": "5.5.5",
+    "dev-origin": "origin",
+    "newOne": "~0.3.6"
+  }
+}

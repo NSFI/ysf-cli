@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "overwirte": "^0.0.3",
+    "newOne": "~0.3.2"
+  },
+  "dependenciesToRemove": ["remove"],
+  "devDependencies": {
+    "webpack": "^4.17.0",
+    "dev-overwirte": "5.5.5",
+    "newOne": "~0.3.6"
+  },
+  "devDependenciesToRemove": ["dev-remove"]
+}

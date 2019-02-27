@@ -1,18 +1,19 @@
 const fs = require("fs");
+const fsExtra = require("fs-extra");
 const path = require("path");
 const utils = require("./utils");
 const execPromise = require("../../util/execPromise");
 const {
   PROJ_DIR,
   CACHE_DIR,
-  CACHE_UPDATE_PATH,
+  UPDATE_CONFIG_PATH,
   PROJ_PACKAGE_JSON
 } = require("./variables");
 
 const methods = require("./updateMethods");
 
-exports.update = async function(version) {
-  if (process.env.debug) {
+exports.exec = async function(version, { debug } = {}) {
+  if (debug) {
     await checkoutVersion(version);
   }
 
@@ -22,8 +23,15 @@ exports.update = async function(version) {
     return;
   }
 
+  //before hook
+
   // 1. 先处理package.json里的依赖
-  await methods.resolveDepenendencies(config);
+  let packageJSON = await fsExtra.readJSON(PROJ_PACKAGE_JSON);
+  await methods.resolveDepenendencies(packageJSON, config);
+  //保存更改文件
+  await fsExtra.writeJSON(PROJ_PACKAGE_JSON, packageJSON, { spaces: 2 });
+
+  //after hook
 };
 
 /**
@@ -39,11 +47,22 @@ async function checkoutVersion(version) {
 }
 
 async function readUpdateConfig() {
-  if (fs.existsSync(CACHE_UPDATE_PATH)) {
-    delete require.cache[CACHE_UPDATE_PATH]; //删除require的依赖
-    return require(CACHE_UPDATE_PATH);
+  if (fs.existsSync(UPDATE_CONFIG_PATH)) {
+    return await fsExtra.readJSON(UPDATE_CONFIG_PATH);
   } else {
     // update 文件不存在，返回null
     return null;
   }
+}
+
+async function customScript(globFilesPattern, jsToExecute) {
+  let result = execPromise(
+    `node ${jsToExecute} ${globFilesPattern.join(" ")}`,
+    {
+      cwd: PROJ_DIR,
+      env: { PROJ_DIR, CACHE_DIR }
+    }
+  );
+
+  console.log(result);
 }
