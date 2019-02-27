@@ -25,7 +25,7 @@ exports.exec = async function(version, { debug } = {}) {
 
   //before hook
   if (config.hooks) {
-    await methods.execBeforeUpdate(config)
+    await methods.execBeforeUpdate(config);
   }
 
   // 1. 先处理package.json里的依赖
@@ -34,9 +34,15 @@ exports.exec = async function(version, { debug } = {}) {
   //保存更改文件
   await fsExtra.writeJSON(PROJ_PACKAGE_JSON, packageJSON, { spaces: 2 });
 
+  //移动文件，
+  await methods.override(config);
+
+  //删除文件
+  await methods.delete(config);
+
   //after hook
   if (config.hooks) {
-    await methods.execAfterUpdate(config)
+    await methods.execAfterUpdate(config);
   }
 };
 

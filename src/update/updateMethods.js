@@ -82,8 +82,10 @@ async function override(config) {
 
     shell.cd(CACHE_DIR);
     for (let file of fileList) {
-      let matches = glob.sync(file, { cwd: CACHE_DIR });
+      let matches = glob.sync(file, { cwd: CACHE_DIR, nodir: true });
       for (let filename of matches) {
+        fs.statSync(path.resolve(CACHE_DIR, filename));
+        shell.mkdir("-p", path.dirname(path.resolve(PROJ_DIR, filename)));
         shell.cp(
           path.resolve(CACHE_DIR, filename),
           path.resolve(PROJ_DIR, filename)
