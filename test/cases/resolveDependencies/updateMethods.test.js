@@ -1,7 +1,7 @@
 const path = require("path");
 const fsExtra = require("fs-extra");
 
-describe("Update-UpdateMethod", () => {
+describe("UpdateMethod", () => {
   it("should resolve dependencies correctly", async () => {
     process.chdir(__dirname);
     const updateMethod = require("../../../src/update/updateMethods");

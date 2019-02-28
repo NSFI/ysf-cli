@@ -2,7 +2,7 @@ const path = require("path");
 const fsExtra = require("fs-extra");
 const shell = require("shelljs");
 const glob = require("glob");
-describe("Update-updateHook", () => {
+describe("UpdateMethod", () => {
   beforeAll(() => {
     // 重建测试环境
 

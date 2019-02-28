@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Update-updateHook should rename files 1`] = `
+exports[`UpdateMethod should rename files 1`] = `
 Array [
   "testOutput/Afile",
   "testOutput/fileB",

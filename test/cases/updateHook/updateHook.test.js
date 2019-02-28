@@ -1,7 +1,7 @@
 const path = require("path");
 const fsExtra = require("fs-extra");
 
-describe("Update-updateHook", () => {
+describe("UpdateMethod", () => {
   beforeAll(() => {
     process.chdir(__dirname);
     jest.mock("../../../src/update/variables", () => {
