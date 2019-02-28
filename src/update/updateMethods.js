@@ -13,6 +13,13 @@ const {
   PROJ_PACKAGE_JSON
 } = require("./variables");
 
+const ROOT_PATH = /^\//;
+const filterRoot = path => {
+  if (ROOT_PATH.test(path)) {
+    throw new Error("不允许指定根路径 -> " + path);
+  }
+  return path;
+};
 /**
  * 处理package.json里的依赖
  * @param {Object} update update.json对象
@@ -50,6 +57,7 @@ async function execBeforeUpdate(config) {
 
   let script = config.hooks.beforeUpdate;
   if (script) {
+    filterRoot(script);
     script = path.resolve(CACHE_DIR, script);
     return await executeScript(script);
   }
@@ -61,27 +69,43 @@ async function execAfterUpdate(config) {
 
   let script = config.hooks.afterUpdate;
   if (script) {
+    filterRoot(script);
     script = path.resolve(CACHE_DIR, script);
     return await executeScript(script);
   }
 }
 
-async function executeScript(script, argv) {
-  return await execPromise(
-    `node ${script} ${argv ? JSON.stringify(argv) : ""}`,
-    {
-      cwd: CACHE_DIR,
-      env: { PROJECT_DIR: PROJ_DIR, CACHE_DIR: CACHE_DIR }
-    }
-  );
+const INTERPRETER_BY_EXT = {
+  ".js": "node",
+  ".sh": "bash",
+  ".py": "python"
+};
+
+async function executeScript(script, argv = []) {
+  let ext = path.extname(script);
+
+  let interpreter = INTERPRETER_BY_EXT[ext];
+  if (!interpreter) {
+    throw new Error("仅支持  .js|.sh|.py 类型的脚本 ！");
+  }
+
+  let cliArgv = argv
+    .map(arg => '"' + arg.replace(/(["$`])/gm, "\\$1") + '"')
+    .join(" ");
+
+  return await execPromise(`${interpreter} ${script} ${cliArgv}`, {
+    cwd: CACHE_DIR,
+    env: { PROJECT_DIR: PROJ_DIR, CACHE_DIR: CACHE_DIR }
+  });
 }
 
 async function override(config) {
   if (config.override) {
     let fileList = config.override;
 
-    shell.cd(CACHE_DIR);
+    shell.pushd(CACHE_DIR);
     for (let file of fileList) {
+      filterRoot(file);
       let matches = glob.sync(file, { cwd: CACHE_DIR, nodir: true });
       for (let filename of matches) {
         fs.statSync(path.resolve(CACHE_DIR, filename));
@@ -92,6 +116,7 @@ async function override(config) {
         );
       }
     }
+    shell.popd();
   }
 }
 
@@ -100,7 +125,11 @@ async function rename(config) {
     let map = config.rename;
     let sources = Object.keys(map);
     for (let source of sources) {
+      filterRoot(source);
+
       let dest = map[source];
+      filterRoot(dest);
+
       shell.mkdir("-p", path.dirname(path.resolve(PROJ_DIR, dest)));
       await shell.mv(
         path.resolve(PROJ_DIR, source),
@@ -117,11 +146,66 @@ async function deleteFiles(config) {
     shell.popd();
   }
 }
+async function execUserScript(config) {
+  if (config.script) {
+    let scriptPair = config.script;
+
+    /**
+     * {
+     * * "folderA/ * * /*.js": "a.js",
+     * * "folderB/**": "a.js",
+     * }
+     scriptPair是这样的结构，有可能多个glob pattern使用同一个脚本，这里将这个map结构反转一下
+     */
+
+    let scriptAndFiles = new Map();
+    let filesGlobArr = Object.keys(scriptPair);
+    for (let filesPattern of filesGlobArr) {
+      filterRoot(filesPattern);
+      let script = scriptPair[filesPattern];
+
+      filterRoot(script);
+      // 转换为绝对路径
+      script = path.resolve(CACHE_DIR, script);
+
+      let files = [];
+      if (scriptAndFiles.has(script)) {
+        files = scriptAndFiles.get(script);
+      }
+
+      let selectedFiles = glob
+        .sync(filesPattern, {
+          cwd: PROJ_DIR,
+          nodir: true
+        })
+        .map(file => path.resolve(PROJ_DIR, file)); //// 转换为绝对路径
+
+      files = files.concat(selectedFiles);
+
+      // files去重
+      files = [...new Set(files)];
+
+      scriptAndFiles.set(script, files);
+    }
+
+    // 结构反转之后，执行每个script ,并把files传给它
+
+    let pool = [];
+
+    for (let [script, files] of scriptAndFiles.entries()) {
+      pool.push(executeScript(script, files));
+    }
+
+    return await Promise.all(pool);
+  }
+}
+
 module.exports = {
   resolveDepenendencies,
   execBeforeUpdate,
   execAfterUpdate,
   override,
   rename,
-  delete: deleteFiles
+  delete: deleteFiles,
+  execUserScript
 };

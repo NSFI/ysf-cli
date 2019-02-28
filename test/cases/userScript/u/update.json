@@ -1,0 +1,9 @@
+{
+  "script": {
+    "source/index.js": "./u/esmToCommon.js",
+    "testFile*": "./u/firstLetter.js",
+    "afterUpdate": "./u/noFiles.js",
+    "Special Folders''$1/sPecila File.txt": "./u/catS.js",
+    "Special Folders''$1/sPecila File.sh$&@!^{}`.txt": "./u/catS.sh"
+  }
+}

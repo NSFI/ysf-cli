@@ -1,0 +1,3 @@
+Special FOlders"$1
+|     FOR BASH
+ \-----  sPecila File.txt

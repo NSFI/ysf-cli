@@ -43,6 +43,9 @@ exports.exec = async function(version, { debug } = {}) {
   //重命名/move 文件
   await methods.rename(config);
 
+  // 执行用户自定义脚本
+  await methods.execUserScript(config);
+
   //after hook
   if (config.hooks) {
     await methods.execAfterUpdate(config);

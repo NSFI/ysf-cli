@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UpdateMethod should execute custom script correctly 1`] = `
+Array [
+  "===========BEGIN==============
+const React = require(\\"React\\");
+
+class TEST extends React.Component {
+  render() {
+    return <h2>test case </h2>;
+  }
+}
+module.exports = TEST;
+
+===========END==============",
+  "===========BEGIN==============
+firstLetter
+[ '/mnt/c/repos/ysf-cli/test/cases/userScript/testFileA ss.md',
+  '/mnt/c/repos/ysf-cli/test/cases/userScript/testFileB \\\\'sfawe.md' ]
+HELLOWORLD
+BIGBANG@@@
+===========END==============",
+  "===========BEGIN==============
+process.argv.length =  0
+===========END==============",
+  "===========BEGIN==============
+[ '/mnt/c/repos/ysf-cli/test/cases/userScript/Special Folders\\\\'\\\\'$1/sPecila File.txt' ]
+Special FOlders\\"$1
+|       FOR NODEJS
+ \\\\-----  sPecila File.txt
+
+===========END==============",
+  "/mnt/c/repos/ysf-cli/test/cases/userScript/Special Folders''$1/sPecila File.sh$&@!^{}\`.txt
+Special FOlders\\"$1
+|     FOR BASH
+ \\\\-----  sPecila File.txt",
+]
+`;

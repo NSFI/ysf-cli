@@ -125,7 +125,7 @@ async function getTags() {
   verbose("Git tag:");
   verbose(output);
   if (!output) {
-    throw "脚手架无tags";
+    throw new Error("脚手架无tags");
   }
 
   // 对标签进行验证并排序
