@@ -98,15 +98,15 @@ async function override(config) {
 async function rename(config) {
   if (config.rename) {
     let map = config.rename;
-    await Promise.all(
-      Object.keys(map).map(source => {
-        let dest = map[source];
-        return fsExtra.move(
-          path.resolve(PROJ_DIR, source),
-          path.resolve(PROJ_DIR, dest)
-        );
-      })
-    );
+    let sources = Object.keys(map);
+    for (let source of sources) {
+      let dest = map[source];
+      shell.mkdir("-p", path.dirname(path.resolve(PROJ_DIR, dest)));
+      await shell.mv(
+        path.resolve(PROJ_DIR, source),
+        path.resolve(PROJ_DIR, dest)
+      );
+    }
   }
 }
 async function deleteFiles(config) {

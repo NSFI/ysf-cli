@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Update-updateHook should rename files 1`] = `
+Array [
+  "testOutput/Afile",
+  "testOutput/fileB",
+  "testOutput/fileC",
+  "testOutput/folderAfterRename/subFolder/files",
+  "testOutput/newFolder/newFilename",
+]
+`;

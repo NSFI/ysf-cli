@@ -1,0 +1,7 @@
+{
+  "rename": {
+    "folderToRename/delteFiile": "newFolder/newFilename",
+    "folderToRename": "folderAfterRename",
+    "fileA": "Afile"
+  }
+}

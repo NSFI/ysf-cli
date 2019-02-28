@@ -34,11 +34,14 @@ exports.exec = async function(version, { debug } = {}) {
   //保存更改文件
   await fsExtra.writeJSON(PROJ_PACKAGE_JSON, packageJSON, { spaces: 2 });
 
-  //移动文件，
+  //替换文件，
   await methods.override(config);
 
   //删除文件
   await methods.delete(config);
+
+  //重命名/move 文件
+  await methods.rename(config);
 
   //after hook
   if (config.hooks) {
