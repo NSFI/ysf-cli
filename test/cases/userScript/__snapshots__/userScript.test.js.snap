@@ -22,14 +22,12 @@ BIGBANG@@@
 process.argv.length =  0
 ===========END==============",
   "===========BEGIN==============
-[ \\"PROJECT_DIR/Special Folders''$1/sPecila File.txt\\" ]
 Special FOlders\\"$1
 |       FOR NODEJS
  \\\\-----  sPecila File.txt
 
 ===========END==============",
-  "PROJECT_DIR/Special Folders''$1/sPecila File.sh$&@!^{}\`.txt
-Special FOlders\\"$1
+  "Special FOlders\\"$1
 |     FOR BASH
  \\\\-----  sPecila File.txt",
 ]

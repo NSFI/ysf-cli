@@ -3,7 +3,6 @@ const path = require("path");
 process.argv.splice(0, 2);
 console.log("===========BEGIN==============");
 
-console.log(process.argv.map(path => path.replace(process.env.PROJECT_DIR, 'PROJECT_DIR')));
 try {
   let files = process.argv;
 
