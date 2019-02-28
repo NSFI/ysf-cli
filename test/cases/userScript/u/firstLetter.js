@@ -3,7 +3,6 @@ const fs = require("fs");
 process.argv.splice(0, 2);
 console.log("===========BEGIN==============");
 console.log("firstLetter");
-console.log(process.argv);
 try {
   let files = process.argv;
 

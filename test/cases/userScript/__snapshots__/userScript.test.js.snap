@@ -15,8 +15,6 @@ module.exports = TEST;
 ===========END==============",
   "===========BEGIN==============
 firstLetter
-[ '/mnt/c/repos/ysf-cli/test/cases/userScript/testFileA ss.md',
-  '/mnt/c/repos/ysf-cli/test/cases/userScript/testFileB \\\\'sfawe.md' ]
 HELLOWORLD
 BIGBANG@@@
 ===========END==============",
@@ -24,13 +22,13 @@ BIGBANG@@@
 process.argv.length =  0
 ===========END==============",
   "===========BEGIN==============
-[ '/mnt/c/repos/ysf-cli/test/cases/userScript/Special Folders\\\\'\\\\'$1/sPecila File.txt' ]
+[ \\"PROJECT_DIR/Special Folders''$1/sPecila File.txt\\" ]
 Special FOlders\\"$1
 |       FOR NODEJS
  \\\\-----  sPecila File.txt
 
 ===========END==============",
-  "/mnt/c/repos/ysf-cli/test/cases/userScript/Special Folders''$1/sPecila File.sh$&@!^{}\`.txt
+  "PROJECT_DIR/Special Folders''$1/sPecila File.sh$&@!^{}\`.txt
 Special FOlders\\"$1
 |     FOR BASH
  \\\\-----  sPecila File.txt",
