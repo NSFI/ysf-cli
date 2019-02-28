@@ -3,6 +3,7 @@ const fsExtra = require("fs-extra");
 const path = require("path");
 const shell = require("shelljs");
 const program = require("commander");
+
 const updateRunner = require("./updateRunner");
 const execPromise = require("../../util/execPromise");
 const utils = require("./utils");
@@ -19,6 +20,8 @@ const {
   CACHE_DIR,
   PROJ_BOIL_PATH: PROJ_BOIL
 } = require("./variables");
+
+const { boilerplateRepo } = require("../constants");
 
 const runInCache = { cwd: CACHE_DIR };
 const runInCli = { cwd: CLI_DIR };
@@ -79,14 +82,26 @@ module.exports = async function main(updateToVersion, options) {
  * 更新模板的tags,如果不存在就clone下来
  */
 async function updateBoilerplate(projMeta = {}, options) {
-  const { boilerplateRepo } = projMeta;
+  const { boilerplateRepo: projRepo } = projMeta;
   const { noCache } = options;
-  if (noCache) {
+
+  //如果配置文件改变了
+  let finalBoilRepo = projRepo || boilerplateRepo;
+  let cacheExist = fs.existsSync(CACHE_DIR);
+  let updateIsOk = true;
+
+  if (cacheExist) {
+    verbose("Check boilerplateRepo's uri");
+    let remoteV = await execPromise("git remote -v", runInCache);
+    if (remoteV.search(finalBoilRepo) == -1) updateIsOk = false;
+  }
+
+  if (cacheExist && noCache) {
     shell.rm("-rf", CACHE_DIR);
     verbose("rm -rf " + CACHE_DIR);
   }
 
-  if (fs.existsSync(CACHE_DIR)) {
+  if (cacheExist && updateIsOk) {
     // 更新模板的代码
     verbose(chalkProcessing("Pull latest boilterplate"));
     verbose(
@@ -108,12 +123,7 @@ async function updateBoilerplate(projMeta = {}, options) {
     verbose(await execPromise("git fetch --tags", runInCache));
   } else {
     verbose("clone boiletplate to " + CACHE_DIR);
-    verbose(
-      await execPromise(
-        `git clone https://github.com/eynol/updater-demo.git ./.cache`,
-        runInCli
-      )
-    );
+    verbose(await execPromise(`git clone ${finalBoilRepo} ./.cache`, runInCli));
   }
 }
 

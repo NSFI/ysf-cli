@@ -9,7 +9,7 @@ const update = require('../src/update');
 const { chalkError, chalkInfo } = require('../util/chalkConfig');
 const ora = require('ora');
 const spinner = ora('文件下载中...请不要关闭命令行窗口');
-
+const { boilerplateRepo } = require('../src/constants');
 program
   .version('1.0.0')
   .description('云商服react & ant design模板工程的cli');
@@ -19,10 +19,10 @@ program
   .description('Creates a new application')
   .action(function(project) {
     if (project) {
-      let pwd = process.pwd();
+      let pwd = process.cwd();
       console.log(chalkInfo(`正在拉取模板代码，下载位置：${pwd}/${project}/ ...`));
       spinner.start();
-      shell.exec(`git clone https://github.com/NSFI/react-ant-design-boilerplate ./${project}`)
+      shell.exec(`git clone ${boilerplateRepo} ./${project}`)
       shell.rm('-rf', [`${project}/.git`,`${project}/u`]);
 
       spinner.succeed('模板工程建立完成');
