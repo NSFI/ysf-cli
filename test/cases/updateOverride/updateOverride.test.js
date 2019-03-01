@@ -15,15 +15,13 @@ describe("UpdateMethod", () => {
       path.resolve("./testOutput/broadcast.md"),
       "thisIsOldFile"
     );
-
   });
   it("should override files correctly", async () => {
     //  prepare
     const updateMethod = require("../../../src/update/updateMethods");
-    const variables = require('../../../src/update/variables');
+    const variables = require("../../../src/update/variables");
     variables.PROJECT_DIR = path.resolve("./testOutput");
-    variables.CACHE_DIR = path.resolve('./')
-
+    variables.CACHE_DIR = path.resolve("./");
 
     const updateConfig = await fsExtra.readJSON(
       path.resolve(__dirname, "./u/update.json")

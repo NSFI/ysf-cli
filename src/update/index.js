@@ -3,6 +3,7 @@ const fsExtra = require("fs-extra");
 const path = require("path");
 const shell = require("shelljs");
 const program = require("commander");
+const ora = require('ora');
 
 const updateRunner = require("./updateRunner");
 const execPromise = require("../../util/execPromise");
@@ -107,54 +108,65 @@ module.exports = async function main(updateToVersion, options) {
  * 更新模板的tags,如果不存在就clone下来
  */
 async function updateBoilerplate(projectBoil = {}, options) {
-  const { CACHE_DIR, CLI_DIR, cacheFolder, boilerplateRepo } = variables;
-  const { noCache } = options;
+  const indicator = ora('更新模版');
+  try {
 
-  //如果配置文件改变了
-  let cacheExist = fs.existsSync(CACHE_DIR);
-  let updateIsOk = true;
+    const { CACHE_DIR, CLI_DIR, cacheFolder, boilerplateRepo } = variables;
+    const { noCache } = options;
 
-  if (cacheExist) {
-    verbose("Check boilerplateRepo's uri");
-    let remoteV = await execPromise("git remote -v", { cwd: CACHE_DIR });
-    if (remoteV.search(boilerplateRepo) == -1) {
-      updateIsOk = false;
-    }
-  }
+    indicator.start();
+    //如果配置文件改变了
+    let cacheExist = fs.existsSync(CACHE_DIR);
+    let updateIsOk = true;
 
-  if (cacheExist && (noCache || !updateIsOk)) {
-    shell.rm("-rf", CACHE_DIR);
-    verbose("rm -rf " + CACHE_DIR);
-  }
-
-  if (cacheExist && updateIsOk) {
-    // 更新模板的代码
-    verbose(chalkProcessing("Pull latest boilterplate"));
-    verbose(
-      await execPromise(
-        "git reset --hard -q && git checkout master && git pull origin master ",
-        { cwd: CACHE_DIR }
-      )
-    );
-
-    try {
-      let tags = await getTags(options);
-      verbose(chalkProcessing("Delete old tags"));
-      verbose(await execPromise(`git tag -d ${tags.join(" ")}`, { cwd: CACHE_DIR }));
-    } catch (e) {
-      //可能在执行过程中中断，导致无tags
+    if (cacheExist) {
+      verbose("Check boilerplateRepo's uri");
+      let remoteV = await execPromise("git remote -v", { cwd: CACHE_DIR });
+      if (remoteV.search(boilerplateRepo) == -1) {
+        updateIsOk = false;
+      }
     }
 
-    verbose(chalkProcessing("Fetch refresh tags"));
-    verbose(await execPromise("git fetch --tags", { cwd: CACHE_DIR }));
-  } else {
-    verbose("clone boiletplate to " + CACHE_DIR);
-    verbose(
-      await execPromise(
-        `git clone ${boilerplateRepo} ./${cacheFolder}`,
-        { cwd: CLI_DIR }
-      )
-    );
+    if (cacheExist && (noCache || !updateIsOk)) {
+      shell.rm("-rf", CACHE_DIR);
+      verbose("rm -rf " + CACHE_DIR);
+    }
+
+    if (cacheExist && updateIsOk) {
+      // 更新模板的代码
+      indicator.text = '更新本地缓存'
+      verbose(chalkProcessing("Pull latest boilterplate"));
+      verbose(
+        await execPromise(
+          "git reset --hard -q && git checkout master && git pull origin master ",
+          { cwd: CACHE_DIR }
+        )
+      );
+
+      try {
+        let tags = await getTags(options);
+        verbose(chalkProcessing("Delete old tags"));
+        verbose(await execPromise(`git tag -d ${tags.join(" ")}`, { cwd: CACHE_DIR }));
+      } catch (e) {
+        //可能在执行过程中中断，导致无tags
+      }
+
+      verbose(chalkProcessing("Fetch refresh tags"));
+      verbose(await execPromise("git fetch --tags", { cwd: CACHE_DIR }));
+    } else {
+      indicator.text = '克隆模板到本地'
+      verbose("clone boiletplate to " + CACHE_DIR);
+      verbose(
+        await execPromise(
+          `git clone ${boilerplateRepo} ./${cacheFolder}`,
+          { cwd: CLI_DIR }
+        )
+      );
+    }
+    indicator.succeed('更新模板成功～')
+  } catch (e) {
+    indicator.fail('更新失败：' + e.message)
+    throw e;
   }
 }
 

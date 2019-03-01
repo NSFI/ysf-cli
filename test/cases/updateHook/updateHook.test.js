@@ -2,13 +2,13 @@ const path = require("path");
 const fsExtra = require("fs-extra");
 
 describe("UpdateMethod", () => {
-  process.chdir(__dirname)
+  process.chdir(__dirname);
   it("should resolve execute hook script correctly", async () => {
     //  prepare
     const updateMethod = require("../../../src/update/updateMethods");
-    const variables = require('../../../src/update/variables');
+    const variables = require("../../../src/update/variables");
     variables.PROJECT_DIR = path.resolve("../../../");
-    variables.CACHE_DIR = path.resolve('./')
+    variables.CACHE_DIR = path.resolve("./");
 
     const updateConfig = await fsExtra.readJSON(
       path.resolve(__dirname, "./u/update.json")

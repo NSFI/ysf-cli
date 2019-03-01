@@ -9,13 +9,12 @@ describe("UpdateMethod", () => {
     process.chdir(__dirname); // jest.mock path resolve
     shell.rm("-rf", "./testOutput");
     shell.cp("-R", "./reset", "./testOutput");
-
   });
   it("should delete files correctly", async () => {
     //  prepare
-    const variables = require('../../../src/update/variables');
+    const variables = require("../../../src/update/variables");
     variables.PROJECT_DIR = path.resolve("./testOutput");
-    variables.CACHE_DIR = path.resolve('./')
+    variables.CACHE_DIR = path.resolve("./");
 
     const updateMethod = require("../../../src/update/updateMethods");
 
@@ -30,7 +29,7 @@ describe("UpdateMethod", () => {
     let expectedFiles = await fsExtra.readdir(path.resolve("./testOutput"));
 
     expect(expectedFiles.length).toBe(1);
-    expect(expectedFiles[0]).toBe('notDeleteThis')
+    expect(expectedFiles[0]).toBe("notDeleteThis");
   });
   afterAll(() => {
     jest.resetAllMocks();

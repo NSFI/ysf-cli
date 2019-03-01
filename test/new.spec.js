@@ -1,6 +1,6 @@
-const newProject= require('../src/new');
-describe('ysf new command',()=>{
-  it('should filter files out',()=>{
+const newProject = require("../src/new");
+describe("ysf new command", () => {
+  it("should filter files out", () => {
     let content = `# this is comment
     fileA   # commeont
     fileB  #######
@@ -9,13 +9,12 @@ describe('ysf new command',()=>{
 
 #####  new FIles
 
-`
-let expected = ['fileA','fileB'];
+`;
+    let expected = ["fileA", "fileB"];
 
-// process
-let result = newProject.filterFiles(content);
+    // process
+    let result = newProject.filterFiles(content);
 
-expect(result).toEqual(expected);
-
-  })
-})
+    expect(result).toEqual(expected);
+  });
+});

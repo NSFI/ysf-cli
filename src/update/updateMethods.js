@@ -21,6 +21,7 @@ const filterRoot = path => {
 async function resolveDepenendencies(origin, update) {
   try {
     if (update.dependencies) {
+      if (!origin.dependencies) origin.dependencies = {};
       Object.assign(origin.dependencies, update.dependencies);
     }
     if (update.dependenciesToRemove) {
@@ -30,6 +31,7 @@ async function resolveDepenendencies(origin, update) {
     }
 
     if (update.devDependencies) {
+      if (!origin.devDependencies) origin.devDependencies = {};
       Object.assign(origin.devDependencies, update.devDependencies);
     }
 
@@ -101,7 +103,7 @@ async function override(config) {
   if (config.override) {
     let fileList = config.override;
 
-    shell.pushd('-q',CACHE_DIR);
+    shell.pushd("-q", CACHE_DIR);
     for (let file of fileList) {
       filterRoot(file);
       let matches = glob.sync(file, { cwd: CACHE_DIR, nodir: true });
@@ -114,7 +116,7 @@ async function override(config) {
         );
       }
     }
-    shell.popd('-q','+0');
+    shell.popd("-q", "+0");
   }
 }
 

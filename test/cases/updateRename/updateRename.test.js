@@ -9,13 +9,11 @@ describe("UpdateMethod", () => {
     process.chdir(__dirname); // jest.mock path resolve
     shell.rm("-rf", "./testOutput");
     shell.cp("-R", "./reset", "./testOutput");
-
   });
   it("should rename files", async () => {
-
-    const variables = require('../../../src/update/variables');
+    const variables = require("../../../src/update/variables");
     variables.PROJECT_DIR = path.resolve("./testOutput");
-    variables.CACHE_DIR = path.resolve('./')
+    variables.CACHE_DIR = path.resolve("./");
 
     //  prepare
     const updateMethod = require("../../../src/update/updateMethods");

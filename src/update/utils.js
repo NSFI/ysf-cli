@@ -26,4 +26,3 @@ exports.sortGitTags = function(tags) {
 
   return tags$.map(arr => arr.join("."));
 };
-
