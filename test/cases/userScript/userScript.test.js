@@ -2,18 +2,13 @@ const path = require("path");
 const fsExtra = require("fs-extra");
 
 describe("UpdateMethod", () => {
-  beforeAll(() => {
-    process.chdir(__dirname);
-    jest.mock("../../../src/update/variables", () => {
-      const path = require("path");
-      return {
-        PROJ_DIR: path.resolve("./"), //根目录
-        CACHE_DIR: path.resolve("./")
-      };
-    });
-  });
 
+  process.chdir(__dirname)
   it("should execute custom script correctly", async () => {
+    const variables = require('../../../src/update/variables');
+    variables.PROJECT_DIR = path.resolve("./");
+    variables.CACHE_DIR = path.resolve('./')
+
     //  prepare
     const updateMethod = require("../../../src/update/updateMethods");
 

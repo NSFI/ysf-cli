@@ -10,16 +10,13 @@ describe("UpdateMethod", () => {
     shell.rm("-rf", "./testOutput");
     shell.cp("-R", "./reset", "./testOutput");
 
-    jest.mock("../../../src/update/variables", () => {
-      const path = require("path");
-      return {
-        PROJ_DIR: path.resolve("./testOutput"), //根目录
-        CACHE_DIR: path.resolve("./")
-      };
-    });
   });
   it("should delete files correctly", async () => {
     //  prepare
+    const variables = require('../../../src/update/variables');
+    variables.PROJECT_DIR = path.resolve("./testOutput");
+    variables.CACHE_DIR = path.resolve('./')
+
     const updateMethod = require("../../../src/update/updateMethods");
 
     const updateConfig = await fsExtra.readJSON(

@@ -1,5 +1,3 @@
-const { exec } = require("child_process");
-
 const sortTag = (a, b) => {
   let i = 0;
   while (i !== 3) {

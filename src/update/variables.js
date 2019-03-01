@@ -1,20 +1,47 @@
 const path = require("path");
+const { cacheFolder, boilerplateRepo } = require('../constants');
 
 const CLI_DIR = path.resolve(__dirname, "../../");
+const CACHE_DIR = path.resolve(CLI_DIR, cacheFolder);
+const PROJECT_DIR = process.cwd();
 
-const CACHE_DIR = path.resolve(CLI_DIR, ".cache");
-const UPDATE_CONFIG_PATH = path.resolve(CACHE_DIR, "./u/update.json");
 
-const PROJ_DIR = process.cwd();
-const PROJ_PACKAGE_JSON = path.resolve(PROJ_DIR, "package.json");
-const PROJ_BOIL_PATH = path.resolve(PROJ_DIR, ".boilerplate.json");
-
-module.exports = {
+const processVariables = {
   CLI_DIR,
-  CACHE_DIR,
-  UPDATE_CONFIG_PATH,
-  PROJ_DIR,
-  PROJ_BOIL_PATH,
-  PROJ_PACKAGE_JSON
+  //
+  get cacheFolder() { return this._cacheFolder },
+  _cacheFolder: cacheFolder,
+  set cacheFolder(value) {
+    this.CACHE_DIR = this._cacheDir.replace(this._cacheFolder, value);
+    return this._cacheFolder = value
+  },
+  //
+  boilerplateRepo,
+  //
+  get CACHE_DIR() { return this._cacheDir; },
+  _cacheDir: CACHE_DIR,
+  set CACHE_DIR(value) {
+    this.UPDATE_CONFIG_PATH = path.resolve(value, './u/update.json')
+    return this._cacheDir = value
+  },
+  UPDATE_CONFIG_PATH: '',
+  //
+  //
+  get PROJECT_DIR() { return this._projectDir; },
+  _projectDir: PROJECT_DIR,
+  set PROJECT_DIR(value) {
+    this.PROJECT_PACKAGE_PATH = path.resolve(value, 'package.json');
+    this.PROJECT_BOIL_PATH = path.resolve(value, ".boilerplate.json");
+    return this._projectDir = value;
+  },
+  PROJECT_PACKAGE_PATH: '',
+  PROJECT_BOIL_PATH: '',
+
+
 };
-Object.freeze(module.exports);
+
+processVariables.CACHE_DIR = CACHE_DIR;
+processVariables.PROJECT_DIR = PROJECT_DIR;
+
+
+module.exports = processVariables;

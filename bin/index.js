@@ -3,13 +3,7 @@
 const program = require('commander');
 const shell = require('shelljs');
 const fs = require('fs');
-const templates = require('../templates');
-const generate = require('../src/generate');
-const update = require('../src/update');
 const { chalkError, chalkInfo } = require('../util/chalkConfig');
-const ora = require('ora');
-const spinner = ora('文件下载中...请不要关闭命令行窗口');
-const { boilerplateRepo } = require('../src/constants');
 program
   .version('1.0.0')
   .description('云商服react & ant design模板工程的cli');
@@ -17,16 +11,11 @@ program
   .on('--help', printHelp)
   .command('new <project>')
   .description('Creates a new application')
-  .action(function(project) {
+  .action(function (project) {
+    const newProject = require('../src/new');
+
     if (project) {
-      let pwd = process.cwd();
-      console.log(chalkInfo(`正在拉取模板代码，下载位置：${pwd}/${project}/ ...`));
-      spinner.start();
-      shell.exec(`git clone ${boilerplateRepo} ./${project}`)
-      shell.rm('-rf', [`${project}/.git`,`${project}/u`]);
-
-      spinner.succeed('模板工程建立完成');
-
+      newProject(project)
     } else {
       console.log(chalkError('正确命令例子：ysf new myproject'));
     }
@@ -35,8 +24,11 @@ program
   .command('generate <app>')
   .alias('g')
   .description('Generates new code (short-cut alias: "g")')
-  .action(function(app) {
+  .action(function (app) {
     if (app) {
+      const generate = require('../src/generate');
+      const templates = require('../templates');
+
       // 检查pwd当前是否有source
       fs.stat('./source', (err, stats) => {
         if (err || !stats.isDirectory()) {
@@ -52,17 +44,22 @@ program
 program
   .command('update [version]')
   .alias('u')
-  .description('Update application boilerplate version')
+  .description('将当前项目使用的模板更新至指定版本')
+  .option("--dev", "开发模式，将会设置当前目录下的缓存文件夹作为 CACHE_DIR ")
   .option("-l, --list", "list tags")
   .option("-n, --noCache", "without cache")
-  .action(function (version, { list,  noCache }) {
-    if (version || list) {
-      update(version, { list, noCache });
+  .action(function (version, { list, noCache, dev }) {
+    const update = require('../src/update');
+
+    if (version || list || dev) {
+      update(version, { list, noCache, dev });
     } else {
       console.log(chalkError('正确命令例子：ysf update [version] 或 ysf update list'));
     }
   })
-program.option("--debug", "debug mode")
+program
+  .option("--debug", "debug mode")
+  .option("--repo <repo>", "custom repo")
   .option("-v, --verbose", "print all cli output")
   .parse(process.argv);
 

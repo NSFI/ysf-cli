@@ -1,5 +1,6 @@
 
 # ysf-cli
+
 [![NPM version](https://img.shields.io/npm/v/ysf-cli.svg?style=flat)](https://npmjs.org/package/ysf-cli)
 [![NPM downloads](http://img.shields.io/npm/dm/ysf-cli.svg?style=flat)](https://npmjs.org/package/ysf-cli)
 
@@ -30,12 +31,13 @@ We have 2 commands: `new`, `generate`(alias `g`).
 
 ### ysf new [options]
 
-Create project in current directory. 
+Create project in current directory.
 
 #### Usage Examples
 
 ```bash
 $ ysf new blog
+$ ysf new blog --repo=https://内网地址.com:808080/nsfi/nsfi-next-gen-template.git
 ```
 
 ### ysf generate <page> (short-cut alias: "g")
@@ -74,6 +76,28 @@ $ ysf g home
 	└── views          
 	    └── App     
 	    	└── app.ftl    
+```
+
+### ysf update <version> (short-cut alias: "u")
+
+Update your project to a specific version of boilerplate. 
+
+#### Usage Examples
+
+```bash
+$ ysf update 0.0.1
+$ ysf u 0.0.2 --repo=https://内网地址.com:808080/nsfi/nsfi-next-gen-template.git
+$ ysf u --list   # 列出当前可用的版本
+```
+
+If you want to debug the script in the 'u' folder ( short-cut for 'update' ), read following shell commands.
+
+```bash
+$ cd yourProject
+$ mkdir -p .cache/u       # you can treat the .cache folder as CACHE_DIR 
+$ echo '{"script":{"*.js":"./u/debugInYourProject.js"}}' > .cache/u/update.json
+$ echo 'console.log(process.argv)' > .cache/u/debugInYourProject.js
+$ ysf update --dev      # see magic ~
 ```
 
 ## License

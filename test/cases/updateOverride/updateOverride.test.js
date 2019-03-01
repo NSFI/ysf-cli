@@ -16,18 +16,14 @@ describe("UpdateMethod", () => {
       "thisIsOldFile"
     );
 
-
-    jest.mock("../../../src/update/variables", () => {
-      const path = require("path");
-      return {
-        PROJ_DIR: path.resolve("./testOutput"), //根目录
-        CACHE_DIR: path.resolve("./")
-      };
-    });
   });
   it("should override files correctly", async () => {
     //  prepare
     const updateMethod = require("../../../src/update/updateMethods");
+    const variables = require('../../../src/update/variables');
+    variables.PROJECT_DIR = path.resolve("./testOutput");
+    variables.CACHE_DIR = path.resolve('./')
+
 
     const updateConfig = await fsExtra.readJSON(
       path.resolve(__dirname, "./u/update.json")

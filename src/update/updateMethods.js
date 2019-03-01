@@ -1,17 +1,11 @@
 const fs = require("fs");
 const path = require("path");
-const utils = require("./utils");
 const fsExtra = require("fs-extra");
 const execPromise = require("../../util/execPromise");
 
 const glob = require("glob");
 const shell = require("shelljs");
-const {
-  PROJ_DIR,
-  CACHE_DIR,
-  UPDATE_CONFIG_PATH,
-  PROJ_PACKAGE_JSON
-} = require("./variables");
+let variables = require("./variables");
 
 const ROOT_PATH = /^\//;
 const filterRoot = path => {
@@ -51,6 +45,7 @@ async function resolveDepenendencies(origin, update) {
 }
 
 async function execBeforeUpdate(config) {
+  const { CACHE_DIR } = variables;
   if (!config || !config.hooks || !config.hooks.beforeUpdate) {
     return;
   }
@@ -63,6 +58,7 @@ async function execBeforeUpdate(config) {
   }
 }
 async function execAfterUpdate(config) {
+  const { CACHE_DIR } = variables;
   if (!config || !config.hooks || !config.hooks.afterUpdate) {
     return;
   }
@@ -82,6 +78,7 @@ const INTERPRETER_BY_EXT = {
 };
 
 async function executeScript(script, argv = []) {
+  const { CACHE_DIR, PROJECT_DIR } = variables;
   let ext = path.extname(script);
 
   let interpreter = INTERPRETER_BY_EXT[ext];
@@ -95,32 +92,34 @@ async function executeScript(script, argv = []) {
 
   return await execPromise(`${interpreter} ${script} ${cliArgv}`, {
     cwd: CACHE_DIR,
-    env: { PROJECT_DIR: PROJ_DIR, CACHE_DIR: CACHE_DIR }
+    env: { PROJECT_DIR: PROJECT_DIR, CACHE_DIR: CACHE_DIR }
   });
 }
 
 async function override(config) {
+  const { CACHE_DIR, PROJECT_DIR } = variables;
   if (config.override) {
     let fileList = config.override;
 
-    shell.pushd(CACHE_DIR);
+    shell.pushd('-q',CACHE_DIR);
     for (let file of fileList) {
       filterRoot(file);
       let matches = glob.sync(file, { cwd: CACHE_DIR, nodir: true });
       for (let filename of matches) {
         fs.statSync(path.resolve(CACHE_DIR, filename));
-        shell.mkdir("-p", path.dirname(path.resolve(PROJ_DIR, filename)));
+        shell.mkdir("-p", path.dirname(path.resolve(PROJECT_DIR, filename)));
         shell.cp(
           path.resolve(CACHE_DIR, filename),
-          path.resolve(PROJ_DIR, filename)
+          path.resolve(PROJECT_DIR, filename)
         );
       }
     }
-    shell.popd();
+    shell.popd('-q','+0');
   }
 }
 
 async function rename(config) {
+  const { PROJECT_DIR } = variables;
   if (config.rename) {
     let map = config.rename;
     let sources = Object.keys(map);
@@ -130,23 +129,25 @@ async function rename(config) {
       let dest = map[source];
       filterRoot(dest);
 
-      shell.mkdir("-p", path.dirname(path.resolve(PROJ_DIR, dest)));
+      shell.mkdir("-p", path.dirname(path.resolve(PROJECT_DIR, dest)));
       await shell.mv(
-        path.resolve(PROJ_DIR, source),
-        path.resolve(PROJ_DIR, dest)
+        path.resolve(PROJECT_DIR, source),
+        path.resolve(PROJECT_DIR, dest)
       );
     }
   }
 }
 async function deleteFiles(config) {
+  const { PROJECT_DIR } = variables;
   if (config.delete) {
     let fileList = config.delete;
-    shell.pushd(PROJ_DIR);
+    shell.pushd(PROJECT_DIR);
     shell.rm("-rf", fileList);
     shell.popd();
   }
 }
 async function execUserScript(config) {
+  const { CACHE_DIR, PROJECT_DIR } = variables;
   if (config.script) {
     let scriptPair = config.script;
 
@@ -175,10 +176,10 @@ async function execUserScript(config) {
 
       let selectedFiles = glob
         .sync(filesPattern, {
-          cwd: PROJ_DIR,
+          cwd: PROJECT_DIR,
           nodir: true
         })
-        .map(file => path.resolve(PROJ_DIR, file)); //// 转换为绝对路径
+        .map(file => path.resolve(PROJECT_DIR, file)); //// 转换为绝对路径
 
       files = files.concat(selectedFiles);
 

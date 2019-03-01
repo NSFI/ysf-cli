@@ -1,19 +1,12 @@
 const fs = require("fs");
 const fsExtra = require("fs-extra");
-const path = require("path");
-const utils = require("./utils");
 const execPromise = require("../../util/execPromise");
-const {
-  PROJ_DIR,
-  CACHE_DIR,
-  UPDATE_CONFIG_PATH,
-  PROJ_PACKAGE_JSON
-} = require("./variables");
+const variables = require("./variables");
 
 const methods = require("./updateMethods");
 
-exports.exec = async function(version, { debug } = {}) {
-  if (debug) {
+exports.exec = async function (options, version) {
+  if (!options.dev) {
     await checkoutVersion(version);
   }
 
@@ -29,10 +22,11 @@ exports.exec = async function(version, { debug } = {}) {
   }
 
   // 1. 先处理package.json里的依赖
-  let packageJSON = await fsExtra.readJSON(PROJ_PACKAGE_JSON);
+  const { PROJECT_PACKAGE_PATH } = variables;
+  let packageJSON = await fsExtra.readJSON(PROJECT_PACKAGE_PATH);
   await methods.resolveDepenendencies(packageJSON, config);
   //保存更改文件
-  await fsExtra.writeJSON(PROJ_PACKAGE_JSON, packageJSON, { spaces: 2 });
+  await fsExtra.writeJSON(PROJECT_PACKAGE_PATH, packageJSON, { spaces: 2 });
 
   //替换文件，
   await methods.override(config);
@@ -61,26 +55,15 @@ async function checkoutVersion(version) {
     throw new Error("脚手架的版本号不正确");
   }
 
-  await execPromise(`git checkout ${version}`, { cwd: CACHE_DIR });
+  await execPromise(`git checkout ${version}`, { cwd: variables.CACHE_DIR });
 }
 
 async function readUpdateConfig() {
+  const { UPDATE_CONFIG_PATH } = variables;
   if (fs.existsSync(UPDATE_CONFIG_PATH)) {
     return await fsExtra.readJSON(UPDATE_CONFIG_PATH);
   } else {
     // update 文件不存在，返回null
     return null;
   }
-}
-
-async function customScript(globFilesPattern, jsToExecute) {
-  let result = execPromise(
-    `node ${jsToExecute} ${globFilesPattern.join(" ")}`,
-    {
-      cwd: PROJ_DIR,
-      env: { PROJ_DIR, CACHE_DIR }
-    }
-  );
-
-  console.log(result);
 }

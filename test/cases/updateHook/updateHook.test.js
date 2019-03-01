@@ -2,20 +2,13 @@ const path = require("path");
 const fsExtra = require("fs-extra");
 
 describe("UpdateMethod", () => {
-  beforeAll(() => {
-    process.chdir(__dirname);
-    jest.mock("../../../src/update/variables", () => {
-      const path = require("path");
-      return {
-        PROJ_DIR: path.resolve("../../../"), //根目录
-        CACHE_DIR: path.resolve("./")
-      };
-    });
-  });
-
+  process.chdir(__dirname)
   it("should resolve execute hook script correctly", async () => {
     //  prepare
     const updateMethod = require("../../../src/update/updateMethods");
+    const variables = require('../../../src/update/variables');
+    variables.PROJECT_DIR = path.resolve("../../../");
+    variables.CACHE_DIR = path.resolve('./')
 
     const updateConfig = await fsExtra.readJSON(
       path.resolve(__dirname, "./u/update.json")
