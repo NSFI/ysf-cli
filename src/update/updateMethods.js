@@ -80,7 +80,7 @@ const INTERPRETER_BY_EXT = {
 };
 
 async function executeScript(script, argv = []) {
-  const { CACHE_DIR, PROJECT_DIR } = variables;
+  const { CACHE_DIR, PROJECT_DIR, CLI_DIR } = variables;
   let ext = path.extname(script);
 
   let interpreter = INTERPRETER_BY_EXT[ext];
@@ -94,7 +94,7 @@ async function executeScript(script, argv = []) {
 
   return await execPromise(`${interpreter} ${script} ${cliArgv}`, {
     cwd: CACHE_DIR,
-    env: { PROJECT_DIR: PROJECT_DIR, CACHE_DIR: CACHE_DIR }
+    env: { PROJECT_DIR, CACHE_DIR, CLI_DIR }
   });
 }
 
