@@ -135,7 +135,7 @@ async function updateBoilerplate(projectBoil = {}, options) {
     if (cacheExist && updateIsOk) {
       // 更新模板的代码
       indicator.text = '更新本地缓存'
-      verbose(chalkProcessing("Pull latest boilterplate"));
+      verbose(chalkProcessing("Pull latest boilerplate"));
       verbose(
         await execPromise(
           "git reset --hard -q && git checkout master && git pull origin master ",
