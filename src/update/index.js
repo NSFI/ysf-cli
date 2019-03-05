@@ -3,7 +3,7 @@ const fsExtra = require("fs-extra");
 const path = require("path");
 const shell = require("shelljs");
 const program = require("commander");
-const ora = require('ora');
+const ora = require("ora");
 
 const updateRunner = require("./updateRunner");
 const execPromise = require("../../util/execPromise");
@@ -18,24 +18,23 @@ const {
 
 const variables = require("./variables");
 
-
 module.exports = async function main(updateToVersion, options) {
   try {
     const { list, dev } = options;
     const { PROJECT_BOIL_PATH } = variables;
     const VALID_PROJECT = fs.existsSync(PROJECT_BOIL_PATH);
-    const projectBoil = VALID_PROJECT && fsExtra.readJSONSync(PROJECT_BOIL_PATH);
+    const projectBoil =
+      VALID_PROJECT && fsExtra.readJSONSync(PROJECT_BOIL_PATH);
 
     if (projectBoil) {
       // 一些变量的覆盖
       if (projectBoil.boilerplateRepo) {
         variables.boilerplateRepo = projectBoil.boilerplateRepo;
       }
-
     }
 
+    verbose("udpate with option:" + JSON.stringify(options));
     if (dev) {
-
       // 更新缓存文件夹目录，
       if (projectBoil && projectBoil.cacheFolder) {
         variables.cacheFolder = projectBoil.cacheFolder;
@@ -45,13 +44,12 @@ module.exports = async function main(updateToVersion, options) {
       variables.CACHE_DIR = path.resolve(process.cwd(), variables.cacheFolder);
 
       //如果是开发模式，直接执行那个目录的更新设置
-      await updateRunner.exec(options);
+      await updateRunner.exec(options, updateToVersion);
       return;
     }
 
     let currentVersion = VALID_PROJECT && projectBoil.version;
 
-    verbose("udpate with option:" + JSON.stringify(options));
 
     await updateBoilerplate(projectBoil, options);
 
@@ -74,7 +72,6 @@ module.exports = async function main(updateToVersion, options) {
 
     // 项目是标准的模版工程
     if (VALID_PROJECT) {
-
       // 项目的当前版本没有找到
       if (pIndex == -1) {
         console.log(chalkWarning("当前项目的版本号未找到！"));
@@ -96,9 +93,8 @@ module.exports = async function main(updateToVersion, options) {
     } else {
       //非标准模版项目，只执行第一个更新，
       await updateRunner.exec(options, tags[0]);
-      console.log('项目升级至标准模版，请参照初次升级指南修改项目配置');
+      console.log("项目升级至标准模版，请参照初次升级指南修改项目配置");
     }
-
   } catch (e) {
     logError(e);
   }
@@ -108,9 +104,8 @@ module.exports = async function main(updateToVersion, options) {
  * 更新模板的tags,如果不存在就clone下来
  */
 async function updateBoilerplate(projectBoil = {}, options) {
-  const indicator = ora('更新模版');
+  const indicator = ora("更新模版");
   try {
-
     const { CACHE_DIR, CLI_DIR, cacheFolder, boilerplateRepo } = variables;
     const { noCache } = options;
 
@@ -134,7 +129,7 @@ async function updateBoilerplate(projectBoil = {}, options) {
 
     if (cacheExist && updateIsOk) {
       // 更新模板的代码
-      indicator.text = '更新本地缓存'
+      indicator.text = "更新本地缓存";
       verbose(chalkProcessing("Pull latest boilerplate"));
       verbose(
         await execPromise(
@@ -146,7 +141,9 @@ async function updateBoilerplate(projectBoil = {}, options) {
       try {
         let tags = await getTags(options);
         verbose(chalkProcessing("Delete old tags"));
-        verbose(await execPromise(`git tag -d ${tags.join(" ")}`, { cwd: CACHE_DIR }));
+        verbose(
+          await execPromise(`git tag -d ${tags.join(" ")}`, { cwd: CACHE_DIR })
+        );
       } catch (e) {
         //可能在执行过程中中断，导致无tags
       }
@@ -154,18 +151,17 @@ async function updateBoilerplate(projectBoil = {}, options) {
       verbose(chalkProcessing("Fetch refresh tags"));
       verbose(await execPromise("git fetch --tags", { cwd: CACHE_DIR }));
     } else {
-      indicator.text = '克隆模板到本地'
+      indicator.text = "克隆模板到本地";
       verbose("clone boiletplate to " + CACHE_DIR);
       verbose(
-        await execPromise(
-          `git clone ${boilerplateRepo} ./${cacheFolder}`,
-          { cwd: CLI_DIR }
-        )
+        await execPromise(`git clone ${boilerplateRepo} ./${cacheFolder}`, {
+          cwd: CLI_DIR
+        })
       );
     }
-    indicator.succeed('更新模板成功～')
+    indicator.succeed("更新模板成功～");
   } catch (e) {
-    indicator.fail('更新失败：' + e.message)
+    indicator.fail("更新失败：" + e.message);
     throw e;
   }
 }

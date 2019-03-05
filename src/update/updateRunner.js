@@ -51,7 +51,9 @@ exports.exec = async function(options, version) {
 
     // 执行用户自定义脚本
     indicator.text = "Script ...";
-    await methods.execUserScript(config);
+    verbose("Scripts outputs:");
+    let outputs = await methods.execUserScript(config);
+    verbose(outputs.join("\n--------[STDOUT BOUNDARY]---------\n"));
 
     //after hook
     if (config.hooks) {

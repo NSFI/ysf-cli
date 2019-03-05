@@ -95,10 +95,12 @@ If you want to debug the script in the 'u' folder ( short-cut for 'update' ), re
 ```bash
 $ cd yourProject
 $ mkdir -p .cache/u       # you can treat the .cache folder as CACHE_DIR 
-$ echo '{"script":{"*.js":"./u/debugInYourProject.js"}}' > .cache/u/update.json
+$ echo '{"script":{"./*":"./u/debugInYourProject.js"}}' > .cache/u/update.json
 $ echo 'console.log(process.argv)' > .cache/u/debugInYourProject.js
-$ ysf update --dev      # see magic ~
+$ ysf update --dev --verbose     # see magic ~
 ```
+
+With `--dev` option, you can test your update.json manually.
 
 ## License
 
