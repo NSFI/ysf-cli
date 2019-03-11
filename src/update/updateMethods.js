@@ -22,7 +22,11 @@ async function resolveDepenendencies(origin, update) {
   try {
     if (update.dependencies) {
       if (!origin.dependencies) origin.dependencies = {};
-      Object.assign(origin.dependencies, update.dependencies);
+      let dependencies = origin.dependencies;
+      Object.assign(dependencies, update.dependencies);
+      origin.dependencies = JSON.parse(
+        JSON.stringify(dependencies, Object.keys(dependencies).sort())
+      );
     }
     if (update.dependenciesToRemove) {
       for (let key of update.dependenciesToRemove) {
@@ -32,7 +36,11 @@ async function resolveDepenendencies(origin, update) {
 
     if (update.devDependencies) {
       if (!origin.devDependencies) origin.devDependencies = {};
-      Object.assign(origin.devDependencies, update.devDependencies);
+      let devDependencies = origin.devDependencies;
+      Object.assign(devDependencies, update.dependencies);
+      origin.devDependencies = JSON.parse(
+        JSON.stringify(devDependencies, Object.keys(devDependencies).sort())
+      );
     }
 
     if (update.devDependenciesToRemove) {
