@@ -1,0 +1,8 @@
+{
+  "backup": [
+    "folderToBackup",
+    "fileA",
+    "fileB",
+    "fileC"
+  ]
+}

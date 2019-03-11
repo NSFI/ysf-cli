@@ -28,6 +28,12 @@ exports.exec = async function(options, version) {
       await methods.execBeforeUpdate(config);
     }
 
+    // 0. 备份文件
+    if (config.backup) {
+      indicator.text = "Backup files ...";
+      await methods.backup(config);
+    }
+
     indicator.text = "更新 package.json ...";
     // 1. 先处理package.json里的依赖
     const { PROJECT_PACKAGE_PATH } = variables;

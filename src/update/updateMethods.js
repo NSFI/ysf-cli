@@ -128,6 +128,27 @@ async function override(config) {
   }
 }
 
+async function backup(config) {
+  const { CACHE_DIR, PROJECT_DIR } = variables;
+  if (config.backup) {
+    let fileList = config.backup;
+
+    shell.pushd("-q", PROJECT_DIR);
+    for (let file of fileList) {
+      filterRoot(file);
+      let matches = glob.sync(file, { cwd: PROJECT_DIR });
+      for (let filename of matches) {
+        shell.cp(
+          "-rf",
+          path.resolve(PROJECT_DIR, filename),
+          path.resolve(PROJECT_DIR, filename + ".bak")
+        );
+      }
+    }
+    shell.popd("-q", "+0");
+  }
+}
+
 async function rename(config) {
   const { PROJECT_DIR } = variables;
   if (config.rename) {
@@ -212,6 +233,7 @@ async function execUserScript(config) {
 }
 
 module.exports = {
+  backup,
   resolveDepenendencies,
   execBeforeUpdate,
   execAfterUpdate,

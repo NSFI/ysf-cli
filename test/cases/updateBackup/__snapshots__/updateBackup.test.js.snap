@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UpdateMethod should backup files 1`] = `
+Array [
+  "testOutput",
+  "testOutput/fileA",
+  "testOutput/fileA.bak",
+  "testOutput/fileB",
+  "testOutput/fileB.bak",
+  "testOutput/fileC",
+  "testOutput/fileC.bak",
+  "testOutput/folderToBackup",
+  "testOutput/folderToBackup.bak",
+  "testOutput/folderToBackup.bak/delteFiile",
+  "testOutput/folderToBackup/delteFiile",
+]
+`;
