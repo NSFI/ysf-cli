@@ -5,6 +5,7 @@ const variables = require("./variables");
 const ora = require("ora");
 const methods = require("./updateMethods");
 const verbose = require("../../util/verbose");
+
 exports.exec = async function(options, version) {
   const indicator = ora();
   try {
@@ -25,7 +26,9 @@ exports.exec = async function(options, version) {
     //before hook
     if (config.hooks) {
       indicator.text = "Before update ...";
-      await methods.execBeforeUpdate(config);
+
+      let output = await methods.execBeforeUpdate(config);
+      output && (verbose.clearLine(), console.log(output));
     }
 
     // 0. 备份文件
@@ -57,14 +60,21 @@ exports.exec = async function(options, version) {
 
     // 执行用户自定义脚本
     indicator.text = "Script ...";
-    verbose("Scripts outputs:");
     let outputs = await methods.execUserScript(config);
-    verbose(outputs.join("\n--------[STDOUT BOUNDARY]---------\n"));
+
+    outputs = outputs.filter(str => str.trim());
+    if (outputs.length) {
+      verbose.clearLine();
+      console.log("Scripts outputs:");
+      console.log(outputs.join("\n/////////////////////\n"));
+    }
 
     //after hook
     if (config.hooks) {
       indicator.text = "After update ...";
-      await methods.execAfterUpdate(config);
+
+      let output = await methods.execAfterUpdate(config);
+      output && (verbose.clearLine(), console.log(output));
     }
 
     // update boilerplate.json

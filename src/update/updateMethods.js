@@ -138,11 +138,12 @@ async function backup(config) {
       filterRoot(file);
       let matches = glob.sync(file, { cwd: PROJECT_DIR });
       for (let filename of matches) {
-        shell.cp(
-          "-rf",
-          path.resolve(PROJECT_DIR, filename),
-          path.resolve(PROJECT_DIR, filename + ".bak")
-        );
+        let sourcePath = path.resolve(PROJECT_DIR, filename);
+        let backupPath = path.resolve(PROJECT_DIR, filename + ".bak");
+        //如果备份文件不存在，则备份文件
+        if (!fsExtra.existsSync(backupPath)) {
+          shell.cp("-rf", sourcePath, backupPath);
+        }
       }
     }
     shell.popd("-q", "+0");
@@ -160,11 +161,11 @@ async function rename(config) {
       let dest = map[source];
       filterRoot(dest);
 
-      shell.mkdir("-p", path.dirname(path.resolve(PROJECT_DIR, dest)));
-      await shell.mv(
-        path.resolve(PROJECT_DIR, source),
-        path.resolve(PROJECT_DIR, dest)
-      );
+      let sourcePath = path.resolve(PROJECT_DIR, source);
+      let destPath = path.resolve(PROJECT_DIR, dest);
+
+      shell.mkdir("-p", path.dirname(destPath));
+      shell.mv(sourcePath, destPath);
     }
   }
 }
@@ -172,9 +173,9 @@ async function deleteFiles(config) {
   const { PROJECT_DIR } = variables;
   if (config.delete) {
     let fileList = config.delete;
-    shell.pushd(PROJECT_DIR);
+    shell.pushd("-q", PROJECT_DIR);
     shell.rm("-rf", fileList);
-    shell.popd();
+    shell.popd("-q", "+0");
   }
 }
 async function execUserScript(config) {
