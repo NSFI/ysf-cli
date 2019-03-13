@@ -50,7 +50,6 @@ module.exports = async function main(updateToVersion, options) {
 
     let currentVersion = VALID_PROJECT && projectBoil.version;
 
-
     await updateBoilerplate(projectBoil, options);
 
     let tags = await getTags();
@@ -125,6 +124,7 @@ async function updateBoilerplate(projectBoil = {}, options) {
     if (cacheExist && (noCache || !updateIsOk)) {
       shell.rm("-rf", CACHE_DIR);
       verbose("rm -rf " + CACHE_DIR);
+      cacheExist = false;
     }
 
     if (cacheExist && updateIsOk) {
@@ -133,7 +133,7 @@ async function updateBoilerplate(projectBoil = {}, options) {
       verbose(chalkProcessing("Pull latest boilerplate"));
       verbose(
         await execPromise(
-          "git reset --hard -q && git checkout master && git pull origin master ",
+          "git reset --hard -q && git checkout master && git pull --all ",
           { cwd: CACHE_DIR }
         )
       );

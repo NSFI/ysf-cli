@@ -23,6 +23,8 @@ exports.exec = async function(options, version) {
       return;
     }
 
+    await displayCurrentHash();
+
     //before hook
     if (config.hooks) {
       indicator.text = "Before update ...";
@@ -128,4 +130,14 @@ async function processJSONFile(fullPath, modifier) {
   await modifier(packageJSON);
   //保存更改文件
   await fsExtra.writeJSON(fullPath, packageJSON, { spaces: 2 });
+}
+
+async function displayCurrentHash() {
+  const { CACHE_DIR } = variables;
+  try {
+    let hash = await execPromise("git rev-parse HEAD", { cwd: CACHE_DIR });
+    hash && (verbose.clearLine(), console.log(`current hash is :${hash}\n`));
+  } catch (e) {
+    console.log(e.message);
+  }
 }

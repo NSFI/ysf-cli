@@ -37,7 +37,7 @@ async function resolveDepenendencies(origin, update) {
     if (update.devDependencies) {
       if (!origin.devDependencies) origin.devDependencies = {};
       let devDependencies = origin.devDependencies;
-      Object.assign(devDependencies, update.dependencies);
+      Object.assign(devDependencies, update.devDependencies);
       origin.devDependencies = JSON.parse(
         JSON.stringify(devDependencies, Object.keys(devDependencies).sort())
       );
