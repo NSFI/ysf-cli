@@ -1,7 +1,7 @@
 module.exports = `import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import MainLayout from '../MainLayout';
-import { Button } from 'antd';
+import { Button } from 'ppfish';
 import './@{App}.less';
 
 class App extends Component {

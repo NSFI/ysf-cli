@@ -4,7 +4,7 @@ const program = require("commander");
 const shell = require("shelljs");
 const fs = require("fs");
 const { chalkError, chalkInfo, logError } = require("../util/chalkConfig");
-program.version("1.0.0").description("云商服react & ant design模板工程的cli");
+program.version("1.0.0").description("云商服react & ppfish模板工程的cli");
 program
   .on("--help", printHelp)
   .command("new <project>")

@@ -4,7 +4,7 @@
 [![NPM version](https://img.shields.io/npm/v/ysf-cli.svg?style=flat)](https://npmjs.org/package/ysf-cli)
 [![NPM downloads](http://img.shields.io/npm/dm/ysf-cli.svg?style=flat)](https://npmjs.org/package/ysf-cli)
 
-CLI for [react-ant-design-boilerplate](https://github.com/NSFI/react-ant-design-boilerplate) .
+CLI for [react-ppfish-boilerplate](https://github.com/NSFI/react-ppfish-boilerplate) .
 
 ## Getting Started
 
