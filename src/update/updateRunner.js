@@ -80,10 +80,10 @@ exports.exec = async function(options, version) {
     }
 
     // update boilerplate.json
-    await processJSONFile(
-      variables.PROJECT_BOIL_PATH,
-      async json => (json.version = version)
-    );
+    await processJSONFile(variables.PROJECT_BOIL_PATH, async json => {
+      json.boilerplateRepo = variables.boilerplateRepo;
+      json.version = version;
+    });
 
     indicator.succeed("更新成功～");
   } catch (e) {

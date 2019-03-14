@@ -21,14 +21,16 @@ const variables = require("./variables");
 module.exports = async function main(updateToVersion, options) {
   try {
     const { list, dev } = options;
-    const { PROJECT_BOIL_PATH } = variables;
+    const { PROJECT_BOIL_PATH, repoOverride } = variables;
     const VALID_PROJECT = fs.existsSync(PROJECT_BOIL_PATH);
     const projectBoil =
       VALID_PROJECT && fsExtra.readJSONSync(PROJECT_BOIL_PATH);
 
     if (projectBoil) {
       // 一些变量的覆盖
-      if (projectBoil.boilerplateRepo) {
+      if (!repoOverride && projectBoil.boilerplateRepo) {
+        // 如果cli参数里没有覆盖repo地址， 并且项目有自定义的repo地址，那就使用项目的地址
+        // Repo优先级  cli参数 > 项目自定义repo > 默认repo地址
         variables.boilerplateRepo = projectBoil.boilerplateRepo;
       }
     }

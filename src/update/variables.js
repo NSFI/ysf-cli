@@ -1,5 +1,5 @@
 const path = require("path");
-const { cacheFolder, boilerplateRepo } = require("../constants");
+const { cacheFolder, boilerplateRepo, repoOverride } = require("../constants");
 
 const CLI_DIR = path.resolve(__dirname, "../../");
 const CACHE_DIR = path.resolve(CLI_DIR, cacheFolder);
@@ -17,6 +17,7 @@ const processVariables = {
     return (this._cacheFolder = value);
   },
   //
+  repoOverride,// repo是否被cli参数覆盖了
   boilerplateRepo,
   //
   get CACHE_DIR() {

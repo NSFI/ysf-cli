@@ -34,7 +34,7 @@ $ npm start
 
 ```bash
 $ ysf new blog
-$ ysf new blog --repo=https://内网地址.com:808080/nsfi/nsfi-next-gen-template.git # 自定义脚手架的仓库地址
+$ ysf new blog --repo=https://内网地址.com:808080/nsfi/nsfi-next-gen-template.git # 自定义样板工程的仓库地址
 ```
 
 ### ysf generate <page> (short-cut alias: "g")
@@ -77,7 +77,7 @@ $ ysf g home
 
 ### ysf update <version> (short-cut alias: "u")
 
-升级当前项目的脚手架配置至新版本。脚手架项目里有一个文件夹叫`u`，里面包含了从脚手架上一个版本升级到当前版本要做的操作。cli 工具会去读取脚手架里的 `./u/update.json` 文件，然后执行里面声明的更新操作。比如
+升级当前项目的样板工程配置至新版本。样板工程项目里有一个文件夹叫`u`，里面包含了从样板工程上一个版本升级到当前版本要做的操作。cli 工具会去读取样板工程里的 `./u/update.json` 文件，然后执行里面声明的更新操作。比如
 
 ```json
 {
@@ -86,7 +86,7 @@ $ ysf g home
     "webpack.config.dev.js",
     "项目里的文件将会复制一份来备份"
   ],
-  "override": ["将会覆盖的文件，从脚手架覆盖项目里的对应的文件"],
+  "override": ["将会覆盖的文件，从样板工程覆盖项目里的对应的文件"],
   "rename": {
     "项目里的文件路径": "新的文件路径"
   },
@@ -117,7 +117,7 @@ script 会将匹配到的内容转变为命令行参数传递给处理脚本，�
 
 - PROJECT_DIR # 当前执行 ysf update 命令的路径，当前要升级的项目的根路径
 - CLI_DIR # ysf 工具所在的路径
-- CACHE_DIR # 新版本脚手架的根目录。
+- CACHE_DIR # 新版本样板工程的根目录。
 
 script 里的脚本要处理三种情况：
 
@@ -125,7 +125,7 @@ script 里的脚本要处理三种情况：
 2. 匹配到的文件没有经过处理
 3. 匹配到的文件已经处理过
 
-脚手架的版本号采用`x.y.z`的格式，先比较 x 的大小,再比较 y,最后比较 z.在使用新的脚手架版本的项目里，必须有一个`.boilerplate.json` 文件，这个文件里包含当前使用的脚手架版本。版本升级只能一个版本一个版本的升级。
+样板工程的版本号采用`x.y.z`的格式，先比较 x 的大小,再比较 y,最后比较 z.在使用新的样板工程版本的项目里，必须有一个`.boilerplate.json` 文件，这个文件里包含当前使用的样板工程版本。版本升级只能一个版本一个版本的升级。
 
 #### 示例
 
@@ -135,16 +135,24 @@ $ ysf update 0.0.2 --repo=https://内网地址.com:808080/nsfi/nsfi-next-gen-tem
 $ ysf update --list   # 列出当前可用的版本
 ```
 
-### 如何调试 update.json ?
+当使用--repo 参数时，将会覆盖`.boilerplate.json`里配置的 repo 地址。
 
-脚手架新版本的目录被称作`CACHE_DIR`,我们只要设定新版本的目录以后，我们就能调试升级脚手架的操作了。
+### `.boilerplate.json` 配置项
+
+- `version` 当前样板工程版本
+- `boilerplateRepo` 自定义样板工程的 repo 地址。Repo 优先级 cli 参数 > 项目自定义 repo > 默认 repo 地址
+- (仅带上--dev 参数)`cacheFolder` 用于调试`update.json`,设置虚拟的样板工程仓库缓存目录。将会忽略 repo 地址，跳过版本检查，直接执行`update.json`里的操作
+
+### 如何调试 update.json？
+
+样板工程新版本的目录被称作`CACHE_DIR`,我们只要设定新版本的目录以后，我们就能调试升级样板工程的操作了。
 
 #### 方案 1
 
 在项目根目录下创建一个`.cache` 文件夹，然后在 `.cache/u/` 文件夹里配置你的 `update.json` 。
 在项目根目录下执行`ysf update --dev`，就可以测试了。
 
-这种方式相当于将将新版本的脚手架位置设置为了当前项目下的`.cache`文件夹。
+这种方式相当于将将新版本的样板工程位置设置为了当前项目下的`.cache`文件夹。
 
 For example:
 
@@ -168,14 +176,15 @@ $ ysf update --dev --verbose     # see magic ~
 
 #### 方案 2
 
-将脚手架 clone 到本地，与项目根目录平级（不是克隆到项目根目录里，而是克隆到项目根目录的外面），然后配置你的`.boilerplate.json`如下：
+将样板工程 clone 到本地，与项目根目录平级（不是克隆到项目根目录里，而是克隆到项目根目录的外面），然后配置你的`.boilerplate.json`如下：
+
 ```json
 {
   "cacheFolder": "../react-ppfish-boilerplate"
 }
 ```
 
-在项目根目录下执行 `ysf update --dev` 将会读取外层脚手架目录里的`update.json`
+在项目根目录下执行 `ysf update --dev` 将会读取外层样板工程目录里的`update.json`
 
 ## License
 
