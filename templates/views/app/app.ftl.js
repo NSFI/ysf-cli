@@ -2,7 +2,7 @@ module.exports = `<#include "../common/macro.ftl">
 <!DOCTYPE html>
 <html lang="en">
 <@headWrapper>
-<title>@{app}</title>
+<title>{{PageName}}</title>
 </@headWrapper>
 <body>
 <@bodyWrapper>

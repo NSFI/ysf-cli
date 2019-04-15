@@ -3,17 +3,18 @@
 const program = require("commander");
 const shell = require("shelljs");
 const fs = require("fs");
+const pkg = require('../package.json');
 const { chalkError, chalkInfo, logError } = require("../util/chalkConfig");
-program.version("1.0.0").description("云商服react & ppfish模板工程的cli");
+program.version(pkg.version).description("云商服react & ppfish模板工程的cli");
 program
   .on("--help", printHelp)
-  .command("new <project>")
-  .description("Creates a new application")
-  .action(function(project) {
+  .command("new <project> [branch]")
+  .description("Create a new application")
+  .action(function(project, branch) {
     const newProject = require("../src/new");
 
     if (project) {
-      newProject(project);
+      newProject(project, branch);
     } else {
       logError("正确命令例子：ysf new myproject");
     }
@@ -21,7 +22,7 @@ program
 program
   .command("generate <app>")
   .alias("g")
-  .description('Generates new code (short-cut alias: "g")')
+  .description('Generate a new page (short-cut alias: "g")')
   .action(function(app) {
     if (app) {
       const generate = require("../src/generate");
@@ -31,7 +32,7 @@ program
       fs.stat("./source", (err, stats) => {
         if (err || !stats.isDirectory()) {
           logError(
-            "当前目录下没有source目录，如果还没有创建项目请，使用：ysf generate mypage创建"
+            "当前目录下没有source目录，如果还没有创建项目请，使用：ysf new myproject创建模板项目"
           );
         } else {
           generate(templates);

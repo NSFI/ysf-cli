@@ -4,7 +4,7 @@ import {
   SET_LIST,
 } from '../actionTypes';
 
-const @{App} = (state = DEFAULT_STATE, action) => {
+const {{PageName}} = (state = DEFAULT_STATE, action) => {
   switch (action.type) {
 
     case SET_TOTAL_NUM:
@@ -23,5 +23,5 @@ const @{App} = (state = DEFAULT_STATE, action) => {
   }
 };
 
-export default @{App};
+export default {{PageName}};
 `;

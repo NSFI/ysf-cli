@@ -2,7 +2,7 @@ module.exports = `import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import MainLayout from '../MainLayout';
 import { Button } from 'ppfish';
-import './@{App}.less';
+import './{{PageName}}.less';
 
 class App extends Component {
 
@@ -25,7 +25,7 @@ class App extends Component {
   render() {
     return (
       <MainLayout>
-        <Button>@{app}</Button>
+        <Button>{{PageName}}</Button>
       </MainLayout>
     );
   }

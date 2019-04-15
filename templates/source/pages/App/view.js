@@ -1,12 +1,12 @@
 module.exports = `import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import @{App} from './@{App}';
+import {{PageName}} from './{{PageName}}';
 import {bindActionCreators} from 'redux';
 import * as actions from './actions';
 
 const mapStateToProps = (state) => {
   return {
-    ...state.@{app}
+    ...state.{{PageName}}
   };
 };
 
@@ -16,5 +16,5 @@ const mapDispatchToProps = (dispatch) => {
   );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(@{App});
+export default connect(mapStateToProps, mapDispatchToProps)({{PageName}});
 `;

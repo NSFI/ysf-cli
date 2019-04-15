@@ -8,7 +8,7 @@ const { boilerplateRepo } = require("./constants");
 const execPromise = require("../util/execPromise");
 const verbose = require("../util/verbose");
 
-exports = module.exports = async function newProject(project) {
+exports = module.exports = async function newProject(project, branch='master') {
   console.log(chalkWarning("文件下载中...请不要关闭命令行窗口"));
   const spinner = ora("文件下载中...请不要关闭命令行窗口");
   let pwd = process.cwd();
@@ -20,7 +20,7 @@ exports = module.exports = async function newProject(project) {
 
   try {
     verbose(
-      await execPromise(`git clone ${boilerplateRepo} ./${project} --depth 1`, {
+      await execPromise(`git clone ${boilerplateRepo} ./${project} --branch ${branch} --depth 1`, {
         cwd: pwd
       })
     );

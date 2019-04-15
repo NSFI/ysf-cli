@@ -6,11 +6,11 @@ import {browserHistory} from 'react-router';
 import {syncHistoryWithStore} from 'react-router-redux';
 import Root from '../../pages/Root';
 import configureStore from '../../store/configureStore';
-import {rootReducer, routes} from '../../pages/@{App}';
-import DEFAULT_STATE from '../../pages/@{App}/reducers/initialState';
+import {rootReducer, routes} from '../../pages/{{PageName}}';
+import DEFAULT_STATE from '../../pages/{{PageName}}/reducers/initialState';
 
 const store = configureStore(rootReducer, {
-  @{app}: {
+  {{PageName}}: {
     ...DEFAULT_STATE
   }
 });
