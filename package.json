@@ -28,8 +28,14 @@
   },
   "author": "wushengzhu114@gmail.com",
   "contributors": [
-    {"name": "Andy Wu", "email": "wushengzhu114@gmail.com"},
-    {"name": "eynol", "email": "625608852@qq.com"}
+    {
+      "name": "Andy Wu",
+      "email": "wushengzhu114@gmail.com"
+    },
+    {
+      "name": "eynol",
+      "email": "625608852@qq.com"
+    }
   ],
   "license": "MIT",
   "repository": {
