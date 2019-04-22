@@ -63,14 +63,14 @@ exports.exec = async function(options, version) {
     // 执行用户自定义脚本
     indicator.text = "Script ...";
     let outputs = await methods.execUserScript(config);
-
-    outputs = outputs.filter(str => str.trim());
-    if (outputs.length) {
-      verbose.clearLine();
-      console.log("Scripts outputs:");
-      console.log(outputs.join("\n/////////////////////\n"));
+    if (outputs) {
+      outputs = outputs.filter(str => str.trim());
+      if (outputs.length) {
+        verbose.clearLine();
+        console.log("Scripts outputs:");
+        console.log(outputs.join("\n/////////////////////\n"));
+      }
     }
-
     //after hook
     if (config.hooks) {
       indicator.text = "After update ...";
