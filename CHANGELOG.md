@@ -1,5 +1,9 @@
 # 更新记录
 
+## 1.2.1
+
+- 修复没有脚本输出时filter报错
+
 ## 1.2.0
 
 - 支持执行 `ysf new project boilerplateBranch` 时带上脚手架的分支参数（默认从master分支上clone）
